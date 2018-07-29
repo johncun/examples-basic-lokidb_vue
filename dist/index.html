@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Test Loki Database</title>
+
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/css/materialize.min.css">
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+
+  <!-- development version, includes helpful console warnings -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+
+  <style>
+    body {
+      margin: 1cm;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id='app'>
+
+    <div class="row">
+      <div class="col s12 m6">
+        <div class="card blue-grey darken-1 z-depth-3">
+          <div class="card-content white-text">
+            <span class="card-title">{{ message }}</span>
+            <p>Uses the following features:</p>
+            <p>Node, express, moment, Vue, async/await, ajax (fetch), Vue filters, materialize CSS</p>
+            <p>Loki DB</p>
+            <p>ES6 - spread and destructure to exclude meta fields</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <table class="striped highlight responsive-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>When</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr v-for='rec in initial' :key='rec.id'>
+          <td>{{ rec.id }}</td>
+          <td>{{ rec.name }}</td>
+          <td>{{ rec.dt | formatDate }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    Vue.filter('formatDate', (value) => {
+      if (!value) return ''
+      return moment(new Date(value)).format('DD MMM YYYY HH:mm')
+    })
+
+    /* eslint no-new: off, no-undef: off */
+    new Vue({
+      el: '#app',
+      data: {
+        message: 'Test Loki Database!',
+        initial: []
+      },
+      async mounted () {
+        this.initial = (await fetch('/api/items').then(res => res.json())).reverse()
+      }
+    })
+  </script>
+
+</body>
+
+</html>
